@@ -43,53 +43,53 @@ set('shared_file_fixtures', [
 ]);
 
 // define php-fpm task and when to call it (after deploy and rollback)
-task('service:php-fpm:reload', getTask('servicePhpFpmReload'))
+task('service:php-fpm:reload', getDeployTask('servicePhpFpmReload'))
     ->desc('Reload php-fpm');
 
 // define memcached task and when to call it (after deploy and rollback)
-task('service:memcached:restart', getTask('serviceMemcachedRestart'))
+task('service:memcached:restart', getDeployTask('serviceMemcachedRestart'))
     ->desc('Restart memcached');
 
 // define composer run (deploy:vendors)
-task('deploy:vendors', getTask('deployVendors'))
+task('deploy:vendors', getDeployTask('deployVendors'))
     ->desc('Installing vendors');
 
 // define assetic dump
-task('deploy:assetic:dump', getTask('assetDump'))
+task('deploy:assetic:dump', getDeployTask('assetDump'))
     ->desc('Assetic dump');
 
 // define cache warming task
-task('deploy:cache:warmup', getTask('cacheWarmup'))
+task('deploy:cache:warmup', getDeployTask('cacheWarmup'))
     ->desc('Warm up cache');
 
 // define database migration task
-task('database:migrate', getTask('databaseMigrate'))
+task('database:migrate', getDeployTask('databaseMigrate'))
     ->desc('Migrate database');
 
 // define clear extra front-controllers task
-task('deploy:clear_controllers', getTask('cleanFrontControllers'))
+task('deploy:clear_controllers', getDeployTask('cleanFrontControllers'))
     ->desc('Clear extra front-controllers')
     ->isPrivate();
 
 // define shared fixtures task
-task('deploy:shared:fixtures', getTask('deployFixtures'))
+task('deploy:shared:fixtures', getDeployTask('deployFixtures'))
     ->desc('Deploying shared fixtures');
 
 // define writable deploy task
-task('deploy:writable', getTask('deployWritable'))
+task('deploy:writable', getDeployTask('deployWritable'))
     ->desc('Make writable dirs')
     ->setPrivate();
 
 // define task to show current release
-task('release:current', getTask('releaseCurrent'))
+task('release:current', getDeployTask('releaseCurrent'))
     ->desc('Show current release.');
 
 // define task to list releases
-task('release:list', getTask('releaseListing'))
+task('release:list', getDeployTask('releaseListing'))
     ->desc('Show release listing.');
 
 // rollback to previous release
-task('release:rollback', getTask('releaseRollback'))
+task('release:rollback', getDeployTask('releaseRollback'))
     ->desc('Back to previous release.');
 
 // alias normal deploy task

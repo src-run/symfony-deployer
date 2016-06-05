@@ -26,10 +26,10 @@ function requireDeployInclude($path)
 
 /**
  * @param string $name
- * 
+ *
  * @return Closure
  */
-function getTask($name)
+function getDeployTask($name)
 {
     return \SR\Deployer\Task\TaskClosures::get($name);
 }
