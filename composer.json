@@ -10,7 +10,7 @@
     "source" : "https://src.run/vermicious-deploy-library/git"
   },
   "keywords" : [
-    "vermicious-deploy-library", "vermicious", "symfony", "deploy", "library", "rmf", "src-run"
+    "vermicious-deploy-library", "vermicious", "deploy", "library", "symfony", "silex", "rmf", "src-run"
   ],
   "authors" : [
     {
