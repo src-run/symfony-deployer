@@ -1,19 +1,19 @@
-# [src-run] vermicious-symfony-deploy-library
+# [src-run] vermicious-deploy-library
 
 | Continuous Integration |   Code Quality Review   |    UnitTest Coverage    |
 |:----------------------:|:-----------------------:|:-----------------------:|
-| [![Travis](https://src.run/vermicious-symfony-deploy-library/travis_shield)](https://src.run/vermicious-symfony-deploy-library/travis) | [![Codacy](https://src.run/vermicious-symfony-deploy-library/codacy_shield)](https://src.run/vermicious-symfony-deploy-library/codacy) | [![Coveralls](https://src.run/vermicious-symfony-deploy-library/coveralls_shield)](https://src.run/vermicious-symfony-deploy-library/coveralls) |
+| [![Travis](https://src.run/vermicious-deploy-library/travis_shield)](https://src.run/vermicious-deploy-library/travis) | [![Codacy](https://src.run/vermicious-deploy-library/codacy_shield)](https://src.run/vermicious-deploy-library/codacy) | [![Coveralls](https://src.run/vermicious-deploy-library/coveralls_shield)](https://src.run/vermicious-deploy-library/coveralls) |
 
 ## Overview
 
 [Welcome](https://src.run/go/readme_welcome)!
-The `src-run/vermicious-symfony-deploy-library` package provides an
+The `src-run/vermicious-deploy-library` package provides an
 extension to deployer framework.
 
 ### Grouping
 
-This package is part of the [vermicious](https://src.run/vermicious-symfony-deploy-library/group)
-group ([explanation](https://src.run/vermicious-symfony-deploy-library/group_explanation)),
+This package is part of the [vermicious](https://src.run/vermicious-deploy-library/group)
+group ([explanation](https://src.run/vermicious-deploy-library/group_explanation)),
 comprised of other releases with a concentration in
 *core reflection base classes*,
 and related functionality.
@@ -25,7 +25,7 @@ This package represents a single project within a
 under the *SR* namespace, comprised of framework-agnostic libraries,
 and a number of Symfony bundles. These projects are authored and maintained
 by [Rob Frawley 2nd](https://src.run/rmf) and
-[collaborators](https://src.run/vermicious-symfony-deploy-library/github_collaborators).
+[collaborators](https://src.run/vermicious-deploy-library/github_collaborators).
 
 ## Quick Start
 
@@ -37,14 +37,14 @@ your project requirements. For example, to explicitly require this project using
 the CLI, use the following command.
 
 ```bash
-$ composer require src-run/vermicious-symfony-deploy-library
+$ composer require src-run/vermicious-deploy-library
 ```
 
 ## Reference
 
 ### API Docs
 
-This package's API-documentation is available at [src.run/vermicious-symfony-deploy-library/api](https://src.run/vermicious-symfony-deploy-library/api),
+This package's API-documentation is available at [src.run/vermicious-deploy-library/api](https://src.run/vermicious-deploy-library/api),
 (as well as linked below via the *Reference* badge found under the *Additional Links*
 header). All API-reference is build against the *master* Git branch and updated
 automatically on each Git push---api-reference for *specific releases* will
@@ -81,8 +81,8 @@ be joined using the following link
 ### Issues
 
 To report issues or request a new feature use
-[GitHub](https://src.run/vermicious-symfony-deploy-library/github_issues)
-or [GitLab](https://src.run/vermicious-symfony-deploy-library/gitlab_issues)
+[GitHub](https://src.run/vermicious-deploy-library/github_issues)
+or [GitLab](https://src.run/vermicious-deploy-library/gitlab_issues)
 to start a discussion. Include as much information as possible to aid in
 a quick resolution. Feel free to "ping" the topic if you don't get a
 response within a few days.
@@ -92,7 +92,7 @@ response within a few days.
 You created additional functionality during the use of this package? Send
 it back upstream! *Don't hesitate to submit a pull request!* Beyond the
 brief requirements outlined in the
-[contibuting guide](https://src.run/vermicious-symfony-deploy-library/contributing),
+[contibuting guide](https://src.run/vermicious-deploy-library/contributing),
 your [imagination](https://src.run/go/readme_imagination)
 represents the only limitation.
 
@@ -103,14 +103,14 @@ This project is licensed under the
 [FSF](https://src.run/go/fsf)-/[OSI](https://src.run/go/osi)-approved
 and [GPL](https://src.run/go/gpl)-compatible, permissive free software
 license. Review the
-[LICENSE](https://src.run/vermicious-symfony-deploy-library/license)
+[LICENSE](https://src.run/vermicious-deploy-library/license)
 file distributed with this source code for additional information.
 
 ## Additional Links
 
 |       Purpose | Status        |
 |--------------:|:--------------|
-| *Stable Release*    | [![Packagist](https://src.run/vermicious-symfony-deploy-library/packagist_shield)](https://src.run/vermicious-symfony-deploy-library/packagist) |
-| *Dev Release*    | [![Packagist](https://src.run/vermicious-symfony-deploy-library/packagist_pre_shield)](https://src.run/vermicious-symfony-deploy-library/packagist) |
-| *License*    | [![License](https://src.run/vermicious-symfony-deploy-library/license_shield)](https://src.run/vermicious-symfony-deploy-library/license) |
-| *Reference*  | [![License](https://src.run/vermicious-symfony-deploy-library/api_shield)](https://src.run/vermicious-symfony-deploy-library/api) |
+| *Stable Release*    | [![Packagist](https://src.run/vermicious-deploy-library/packagist_shield)](https://src.run/vermicious-deploy-library/packagist) |
+| *Dev Release*    | [![Packagist](https://src.run/vermicious-deploy-library/packagist_pre_shield)](https://src.run/vermicious-deploy-library/packagist) |
+| *License*    | [![License](https://src.run/vermicious-deploy-library/license_shield)](https://src.run/vermicious-deploy-library/license) |
+| *Reference*  | [![License](https://src.run/vermicious-deploy-library/api_shield)](https://src.run/vermicious-deploy-library/api) |

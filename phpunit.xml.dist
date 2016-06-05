@@ -11,7 +11,7 @@
          bootstrap="./vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="src-run/vermicious-symfony-deploy-library">
+        <testsuite name="src-run/vermicious-deploy-library">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

@@ -11,6 +11,6 @@ php_exts   : ~
 app_prep   : dep-composer
 app_post   : ~
 app_path   : ~
-pkg_name   : vermicious-symfony-deploy-library
+pkg_name   : vermicious-deploy-library
 pkg_desc   : "extension to deployer framework"
 pkg_bndl   : false

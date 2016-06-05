@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/vermicious-symfony-deploy-library` project.
+ * This file is part of the `src-run/vermicious-deploy-library` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *

@@ -1,16 +1,16 @@
 {
-  "name"        : "src-run/vermicious-symfony-deploy-library",
+  "name"        : "src-run/vermicious-deploy-library",
   "license"     : "MIT",
   "type"        : "library",
-  "homepage"    : "https://src.run/vermicious-symfony-deploy-library",
+  "homepage"    : "https://src.run/vermicious-deploy-library",
   "description" : "extension to deployer framework",
     "support" : {
     "email"  : "rmf@src.run",
-    "issues" : "https://src.run/vermicious-symfony-deploy-library/issues",
-    "source" : "https://src.run/vermicious-symfony-deploy-library/git"
+    "issues" : "https://src.run/vermicious-deploy-library/issues",
+    "source" : "https://src.run/vermicious-deploy-library/git"
   },
   "keywords" : [
-    "vermicious-symfony-deploy-library", "vermicious", "symfony", "deploy", "library", "rmf", "src-run"
+    "vermicious-deploy-library", "vermicious", "symfony", "deploy", "library", "rmf", "src-run"
   ],
   "authors" : [
     {
@@ -35,7 +35,7 @@
     "satooshi/php-coveralls"              : "^1.0"
   },
   "bin" : [
-    "bin/symfony-deploy"
+    "bin/deploy"
   ],
   "autoload" :     {
     "psr-4" : {

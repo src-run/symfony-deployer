@@ -2,7 +2,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/vermicious-symfony-deploy-library` project.
+ * This file is part of the `src-run/vermicious-deploy-library` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  * (c) Anton Medvedev <anton@medv.io>
@@ -16,24 +16,31 @@
  */
 function includeDeployFile($file)
 {
-    $dirOpt = [__DIR__ . '/../../../../', __DIR__ . '/../', __DIR__ . '/./'];
-    $loaded = false;
+    $dirOpts = [__DIR__ . '/../../../../', __DIR__ . '/../', __DIR__ . '/./'];
+    $include = null;
 
-    foreach ($dirOpt as $path) {
-        if (!file_exists($filePath = $path . $file)) {
-            continue;
+    foreach ($dirOpts as $path) {
+        if (file_exists($include = $path . $file)) {
+            break;
         }
-
-        require_once $filePath;
-        $loaded = true;
-
-        break;
+        continue;
     }
 
-    if (!$loaded) {
-       fwrite(STDERR, sprintf('Could not locate required include "%s/(../../../..|..|.)/%s"', __DIR__, $file));
-        exit(255);
+    if ($include !== null) {
+        require_once $include;
+        return;
     }
+
+    $outOpts = ['Could not locate required include "%s/(../../../..|..|.)/%s"', __DIR__, $include];
+
+    if (class_exists('\SR\Console\Std\StdErr')) {
+        $stdErr = new \SR\Console\Std\StdErr();
+        $stdErr->writeLine(...$outOpts);
+    } else {
+        fwrite(STDERR, sprintf(...$outOpts));
+    }
+
+    exit(255);
 }
 
 // constant to set that this is a deploy script and this is the deploy bin
@@ -44,8 +51,6 @@ define('DEPLOYER_BIN', __FILE__);
 includeDeployFile('/vendor/autoload.php');
 includeDeployFile('/lib/stub/functions.php');
 includeDeployFile('/vendor/deployer/deployer/src/functions.php');
-
-die('OKAY');
 
 // Recipe include path
 set_include_path(__DIR__ . '/../' . PATH_SEPARATOR . get_include_path());
