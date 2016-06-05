@@ -11,6 +11,7 @@
 
 namespace SR\Deployer\Task;
 
+use Deployer\Task\Context;
 use SR\Console\Std\StdErr;
 use SR\Console\Std\StdOut;
 use SR\Console\Std\StdOutInterface;
@@ -78,10 +79,10 @@ class TaskDefinitions
         $caughtRun = sprintf('cd {{release_path}} && %s {{bin/composer}} %s {{composer_options}} %s {{console_more}}', $envVars, 'update', $options);
 
         try {
-            $this->writeLine('Running composer action: <info>%s</info>', $action);
+            $this->writeTaskLine('Running action: <info>%s</info>', $action);
             run($tryRun);
         } catch (\Exception $e) {
-            $this->writeLine('Running composer action: <info>update</info> <comment>(fallback attempt)</comment>');
+            $this->writeTaskLine('Running action: <info>update</info> <comment>(fallback attempt)</comment>');
             run($caughtRun);
         }
     }
@@ -152,15 +153,12 @@ class TaskDefinitions
             return;
         }
 
-        $this->writeLine('Uploading <info>%d</info> fixtures:', count($fixtures));
-
         $serverName = @env('server')['name'] ?: '';
 
         $replaceAnchors = function ($string, array $replacements = []) {
             foreach ($replacements as $search => $replace) {
                 $string = str_replace($search, $replace, $string);
             }
-
             return $string;
         };
 
@@ -168,38 +166,56 @@ class TaskDefinitions
             '%server_name' => $serverName
         ];
 
+        $i = 1;
         foreach ($fixtures as $from => $goto) {
-            $fromFile = $replaceAnchors($from, $replaceCollection);
-            $gotoFile = $replaceAnchors($goto, $replaceCollection);
+            $fromFile = env()->parse(sprintf('%s/%s', getcwd(), $replaceAnchors($from, $replaceCollection)));
+            $gotoFile = env()->parse(sprintf('{{deploy_path}}/shared/%s', $replaceAnchors($goto, $replaceCollection)));
             $gotoPath = dirname($gotoFile);
 
             if (false === $fromFile = realpath($fromFile)) {
-                $this->writeErrorLine('Fixture not found: <info>%s</info>.', $from);
+                $this->writeErrorLine('Fixture not found: <info>%s</info>.', sprintf('%s/%s', getcwd(), $from));
                 continue;
             }
 
-            run(sprintf('if [ -f $(echo {{deploy_path}}/shared/%s) ]; then rm -rf {{deploy_path}}/shared/%s; fi', $gotoFile, $gotoFile));
-            run(sprintf('if [ ! -d $(echo {{deploy_path}}/shared/%s) ]; then mkdir -p {{deploy_path}}/shared/%s; fi', $gotoPath, $gotoPath));
-            upload($fromFile, sprintf('{{deploy_path}}shared/%s', $gotoFile));
+            $this->writeTaskLine('[<comment>%d</comment>] <info>%s</info> to <info>%s</info>', $i, $fromFile, $gotoFile);
+
+            run(sprintf('if [ -f $(echo %s) ]; then rm -rf %s; fi', $gotoFile, $gotoFile));
+            run(sprintf('if [ ! -d $(echo %s) ]; then mkdir -p %s; fi', $gotoPath, $gotoPath));
+            Context::get()
+                ->getServer()
+                ->upload($fromFile, $gotoFile);
+
+            $i++;
         }
     }
 
     /**
      * Clean (remove) extra front-controllers for production deployments
      */
-    public function cleanFrontControllers()
+    public function cleanSymfonyFrontControllers()
     {
         if (env('env') !== 'prod') {
             return;
         }
 
-        $this->writeLine('Cleaning files from <info>{{deploy_path}}/release/web/</info> for <info>prod</info> deployment:');
+        $this->writeTaskLine(env()->parse('Removing: <info>{{release_path}}/web/app_*.php</info>'));
+        run('rm -f {{release_path}}/web/app_*.php');
 
-        $this->writeLine('Removing: <info>app_.+\.php</info>');
-        run("rm -f {{release_path}}/web/app_*.php");
+        $this->writeTaskLine(env()->parse('Removing: <info>{release_path}}/web/config.php</info>'));
+        run('rm -f {{release_path}}/web/config.php');
+    }
 
-        $this->writeLine('Removing: <info>config.php</info>');
-        run("rm -f {{release_path}}/web/config.php");
+    /**
+     * Clean (remove) extra front-controllers for production deployments
+     */
+    public function cleanSilexFrontControllers()
+    {
+        if (env('env') !== 'prod') {
+            return;
+        }
+
+        $this->writeTaskLine(env()->parse('Removing: <info>{{release_path}}/web/app_dev.php</info>'));
+        run('rm -f {{release_path}}/web/app_dev.php');
     }
 
     /**
@@ -267,7 +283,7 @@ class TaskDefinitions
      */
     public function releaseCurrent()
     {
-        writeln('Current release: ' . basename(env('current')));
+        $this->writeTaskLine('Current: <info>%s</info> (<comment>%s</comment>)', basename(env('current')), env('current'));
     }
 
     /**
@@ -275,11 +291,9 @@ class TaskDefinitions
      */
     public function releaseListing()
     {
-        $this->writeLine('Release listing:');
-
         foreach (env('releases_list') as $i => $r) {
-            $this->writeLine(' [<comment>%d</comment>] <info>%s</info> (%s) %s',
-                $i, $r, run(sprintf('realpath %s/releases/%s', env('deploy_path'), $r)), $i === 0 ? '*active' : '');
+            $this->writeTaskLine('[%s] <info>%s</info> (<comment>%s</comment>) <fg=red>%s</>',
+                str_pad(((string)++$i), 2, '0', STR_PAD_LEFT), $r, run(sprintf('realpath %s/releases/%s', env('deploy_path'), $r)), $i === 1 ? '<- current' : '');
         }
     }
 
@@ -296,13 +310,14 @@ class TaskDefinitions
             return;
         }
 
+        $this->writeTaskLine('Removing: <info>%s</info> (<comment>%s</comment>)', basename(env('current')), env('current'));
+        $this->writeTaskLine('Rolling back...');
+
         $releaseDir = "{{deploy_path}}/releases/{$releases[1]}";
         run("cd {{deploy_path}} && ln -nfs $releaseDir current");
-
-        $this->writeLine('Removing release <info>%s</info>.', $releases[0]);
         run("rm -rf {{deploy_path}}/releases/{$releases[0]}");
 
-        $this->writeLine('Now on release <info>%s</info>.', $releases[1]);
+        $this->writeTaskLine(env()->parse('Current: <info>%s</info> (<comment>{{deploy_path}}/releases/%s</comment>)'), $releases[1], $releases[1]);
     }
 
     /**
@@ -316,6 +331,15 @@ class TaskDefinitions
         } else {
             $this->stdOut->writeLine($message, ...$replacements);
         }
+    }
+
+    /**
+     * @param string  $message
+     * @param mixed[] ...$replacements
+     */
+    protected function writeTaskLine($message, ...$replacements)
+    {
+        $this->writeLine(sprintf('  - %s', $message), ...$replacements);
     }
 
     /**

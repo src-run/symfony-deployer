@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-includeDeployFile('/vendor/deployer/deployer/recipe/common.php');
+includeDeployFile('/lib/stub/recipe-common.php');
 
 // shared files
 set('shared_files', []);
@@ -26,95 +26,33 @@ set('dump_assets', false);
 env('env_vars', '');
 env('env', 'prod');
 
-// Adding support for the Symfony3 directory structure
-set('bin_dir', '.');
-set('var_dir', '.');
-
-// Create cache dir
-task('deploy:create_cache_dir', getDeployTask('deployCreateCacheDirectory'))
-    ->desc('Create cache dir');
-
-// define assets deploy task
-task('deploy:assets', getDeployTask('deployAssets'))
-    ->desc('Normalize asset timestamps');
-
-// define php-fpm task and when to call it (after deploy and rollback)
-task('service:php-fpm:reload', getDeployTask('servicePhpFpmReload'))
-    ->desc('Reload php-fpm');
-
-// define memcached task and when to call it (after deploy and rollback)
-task('service:memcached:restart', getDeployTask('serviceMemcachedRestart'))
-    ->desc('Restart memcached');
-
-// define composer run (deploy:vendors)
-task('deploy:vendors', getDeployTask('deployVendors'))
-    ->desc('Installing vendors');
-
-// define assetic dump
-task('deploy:assetic:dump', getDeployTask('assetDump'))
-    ->desc('Assetic dump');
-
-// define cache warming task
-task('deploy:cache:warmup', getDeployTask('cacheWarmup'))
-    ->desc('Warm up cache');
-
-// define database migration task
-task('database:migrate', getDeployTask('databaseMigrate'))
-    ->desc('Migrate database');
-
 // define clear extra front-controllers task
-task('deploy:clear_controllers', getDeployTask('cleanFrontControllers'))
+task('deploy:clear_controllers', getDeployTask('cleanSilexFrontControllers'))
     ->desc('Clear extra front-controllers')
     ->isPrivate();
 
-// define shared fixtures task
-task('deploy:shared:fixtures', getDeployTask('deployFixtures'))
-    ->desc('Deploying shared fixtures');
-
-// define writable deploy task
-task('deploy:writable', getDeployTask('deployWritable'))
-    ->desc('Make writable dirs')
-    ->setPrivate();
-
-// define task to show current release
-task('release:current', getDeployTask('releaseCurrent'))
-    ->desc('Show current release.');
-
-// define task to list releases
-task('release:list', getDeployTask('releaseListing'))
-    ->desc('Show release listing.');
-
-// rollback to previous release
-task('release:rollback', getDeployTask('releaseRollback'))
-    ->desc('Back to previous release.');
-
-// alias normal deploy task
-task('release:deploy', function() {})
-    ->desc('Push new release.');
-
-/**
- * Main task
- */
+// release task
 task('deploy', [
     'deploy:prepare',
     'deploy:release',
     'deploy:update_code',
+    'deploy:clear_controllers',
+    'deploy:create_cache_dir',
     'deploy:shared',
+    'deploy:shared:fixtures',
     'deploy:assets',
     'deploy:vendors',
     'deploy:writable',
     'deploy:symlink',
     'cleanup',
-])->desc('Deploy your project');
+    'service:php-fpm:reload',
+    'service:memcached:restart',
+    'release:current',
+])->desc('Deploy Silex project');
 
-
-// assign when new tasks are called in pre-existing chain
-after('release:deploy',     'deploy');
-after('deploy',             'service:php-fpm:reload');
-after('deploy',             'service:memcached:restart');
-after('rollback',           'service:php-fpm:reload');
-after('rollback',           'service:memcached:restart');
-after('deploy:shared',      'deploy:shared:fixtures');
-after('deploy',             'success');
+// release task alias
+task('release:deploy', [
+    'deploy'
+])->desc('Deploy Silex project');
 
 /* EOF */
