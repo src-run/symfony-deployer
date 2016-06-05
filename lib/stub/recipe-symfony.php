@@ -30,8 +30,8 @@ env('env_vars', 'SYMFONY_ENV=prod');
 env('env', 'prod');
 
 // Adding support for the Symfony3 directory structure
-set('bin_dir', 'app');
-set('var_dir', 'app');
+set('bin_dir', 'bin');
+set('var_dir', 'var');
 
 // define assetic dump
 task('deploy:assetic:dump', getDeployTask('assetDump'))
@@ -51,7 +51,7 @@ task('deploy:clear_controllers', getDeployTask('cleanSymfonyFrontControllers'))
     ->isPrivate();
 
 // release task
-task('release:deploy', [
+task('deploy', [
     'deploy:prepare',
     'deploy:release',
     'deploy:update_code',
