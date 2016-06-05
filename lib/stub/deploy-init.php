@@ -9,21 +9,8 @@
  * file that was distributed with this source code.
  */
 
-// require composer autoload
-var_dump(__DIR__);
-var_dump(__DIR__ . '/../../vendor/autoload.php');
-var_dump($includeAutoload = __DIR__ . '/../../../../autoload.php');
-
-if (file_exists($includeAutoload = __DIR__ . '/../../vendor/autoload.php')) {
-    require_once $includeAutoload;
-} elseif (file_exists($includeAutoload = __DIR__ . '/../../../../autoload.php')) {
-    require_once $includeAutoload;
-} else {
-    die('Could not find autoload.php');
-}
-
-// include the base reciepe
-requireDeployInclude(__DIR__ . '/../../vendor/deployer/deployer/recipe/symfony3.php');
+// include the base recipe
+requireDeployVendorInclude('deployer/deployer/recipe/symfony3.php');
 
 // import server list
 serverList(__DIR__ . '/../../.deploy-servers.yml');
