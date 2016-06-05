@@ -1,0 +1,60 @@
+{
+  "name"        : "src-run/vermicious-symfony-deploy-library",
+  "license"     : "MIT",
+  "type"        : "library",
+  "homepage"    : "https://src.run/vermicious-symfony-deploy-library",
+  "description" : "extension to deployer framework",
+    "support" : {
+    "email"  : "rmf@src.run",
+    "issues" : "https://src.run/vermicious-symfony-deploy-library/issues",
+    "source" : "https://src.run/vermicious-symfony-deploy-library/git"
+  },
+  "keywords" : [
+    "vermicious-symfony-deploy-library", "vermicious", "symfony", "deploy", "library", "rmf", "src-run"
+  ],
+  "authors" : [
+    {
+      "name"    : "Rob Frawley 2nd",
+      "email"   : "rmf@src.run",
+      "homepage": "https://src.run/rmf",
+      "role"    : "Project Lead"
+    }
+  ],
+  "require" : {
+    "php"                                   : "^5.6 || ^7.0",
+    "src-run/augustus-exception-library"    : "^0.6",
+    "src-run/augustus-reflection-library"   : "^0.6",
+    "src-run/augustus-utility-library"      : "^0.6",
+    "src-run/vermicious-console-io-library" : "^0.1",
+    "deployer/deployer"                     : "^3.3",
+    "herzult/php-ssh"                       : "^1.1"
+  },
+  "require-dev" : {
+    "phpunit/phpunit"                     : "^5.0",
+    "codacy/coverage"                     : "^1.0",
+    "satooshi/php-coveralls"              : "^1.0"
+  },
+  "autoload" :     {
+    "psr-4" : {
+      "SR\\Deployer\\" : "lib/"
+    },
+    "files" : [
+      "lib/stub/functions.php"
+    ]
+  },
+  "autoload-dev" : {
+    "psr-4" : {
+      "SR\\Deployer\\Tests\\" : "tests/"
+    }
+  },
+  "minimum-stability" : "dev",
+  "prefer-stable"     : true,
+  "config": {
+    "bin-dir" : "bin"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master" : "0.1-dev"
+    }
+  }
+}
