@@ -54,7 +54,6 @@
 /config/
 
 # libraries don't need bin, var directories
-/bin/
 /var/
 
 # Remember to Use *.md Variants
