@@ -10,7 +10,13 @@
  */
 
 // require composer autoload
-require_once __DIR__ . '/../../vendor/autoload.php';
+if (file_exists($includeAutoload = __DIR__ . '/../../vendor/autoload.php')) {
+    require_once $includeAutoload;
+} elseif (file_exists($includeAutoload = __DIR__ . '/../../autoload.php')) {
+    require_once $includeAutoload;
+} else {
+    die('Could not find autoload.php');
+}
 
 // include the base reciepe
 requireDeployInclude(__DIR__ . '/../../vendor/deployer/deployer/recipe/symfony3.php');
