@@ -52,11 +52,8 @@ includeDeployFile('/vendor/autoload.php');
 includeDeployFile('/lib/stub/functions.php');
 includeDeployFile('/vendor/deployer/deployer/src/functions.php');
 
-// Recipe include path
-set_include_path(__DIR__ . '/../' . PATH_SEPARATOR . get_include_path());
-
-// Include function declarations
-require_once 'src/functions.php';
+// recipe include path
+\SR\Environment\IncludePath::add(__DIR__ . '/../../../deployer/deployer/');
 
 // Init Deployer
 $console = new \Deployer\Console\Application('Deployer', 'master');
@@ -64,8 +61,10 @@ $input = new \Symfony\Component\Console\Input\ArgvInput();
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 $deployer = new \Deployer\Deployer($console, $input, $output);
 
+option('type', ['t'], \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Type of project.', 'symfony');
+
 // Require config.php script
-$options = getopt('f::', ['file::']);
+$options = getopt('f::t::', ['file::', 'type::']);
 $userSpecifiedFile = null;
 
 if (isset($options['f'])) {
@@ -75,14 +74,23 @@ if (isset($options['f'])) {
 }
 
 if (empty($userSpecifiedFile)) {
-    $deployFile = getcwd() . '/config.php';
+    $deployFile = getcwd() . '/.deploy.php';
 } else {
     $deployFile = ($userSpecifiedFile[0] === '/' ? '' : getcwd() . '/') . $userSpecifiedFile;
 }
 
-if (is_file($deployFile) && is_readable($deployFile)) {
-    require $deployFile;
+if (isset($options['t'])) {
+    $runtimeType = $options['t'];
+} elseif (isset($options['type'])) {
+    $runtimeType = $options['type'];
+} else {
+    $runtimeType = 'symfony';
 }
+
+includeDeployFile(sprintf('/lib/stub/recipe-%s.php', $runtimeType));
+requireDeployServerInclude('.deploy-servers.yml');
+includeDeployFile('/lib/stub/initialize.php');
+includeDeployFile('.deploy.php');
 
 // Run Deployer
 $deployer->run();

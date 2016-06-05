@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Deployer\Task\Context;
+
 /**
  * @param string $path
  */
@@ -20,9 +22,7 @@ function requireDeployInclude($path)
         return;
     }
 
-    $stdErr = new \SR\Console\Std\StdErr();
-    $stdErr->writeLine('Could not locate required deploy file include "%s(/../../|/../../../../../)%s".', __DIR__, $path);
-
+    Context::get()->getOutput()->writeln(sprintf('Could not locate required deploy file include "%s(/../../|/../../../../../)%s".', __DIR__, $path));
     exit(255);
 }
 
@@ -37,9 +37,7 @@ function requireDeployVendorInclude($path)
         return;
     }
 
-    $stdErr = new \SR\Console\Std\StdErr();
-    $stdErr->writeLine('Could not locate required deploy vendor file include "%s(/../../vendor/|/../../../../)%s".', __DIR__, $path);
-
+    Context::get()->getOutput()->writeln(sprintf('Could not locate required deploy vendor file include "%s(/../../vendor/|/../../../../)%s".', __DIR__, $path));
     exit(255);
 }
 
@@ -53,10 +51,8 @@ function requireDeployServerInclude($path)
         serverList($include);
         return;
     }
-
-    $stdErr = new \SR\Console\Std\StdErr();
-    $stdErr->writeLine('Could not locate required deploy server file include "%s(/../../|/../../../../../)%s".', __DIR__, $path);
-
+    
+    Context::get()->getOutput()->writeln(sprintf('Could not locate required deploy server file include "%s(/../../|/../../../../../)%s".', __DIR__, $path));
     exit(255);
 }
 

@@ -4,49 +4,39 @@
  * This file is part of the `src-run/vermicious-deploy-library` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
+ * (c) Anton Medvedev <anton@medv.io>
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
-if (file_exists($includeFile = __DIR__ . '/../../vendor/autoload.php') ||
-    file_exists($includeFile = __DIR__ . '/../../../../autoload.php')) {
-    require_once($includeFile);
-} else {
-    $stdErr = new \SR\Console\Std\StdErr();
-    $stdErr->writeLine('Could not locate autoload file "%s/../../(vendor|../..)/autoload.php".');
-    exit(255);
-}
+includeDeployFile('/vendor/deployer/deployer/recipe/common.php');
 
-// include the base recipe
-requireDeployVendorInclude('deployer/deployer/recipe/symfony3.php');
+// shared files
+set('shared_files', []);
 
-// import server list
-requireDeployServerInclude('.deploy-servers.yml');
+// writable dirs
+set('writable_dirs', []);
 
-// default build stage, git remote, releases to keep, composer path, shared files, and env vars
-set('default_stage',         'dev-local');
-set('keep_releases',         12);
-set('composer_command',      '/usr/local/bin/composer');
-set('ssh_type',              'ext-ssh2');
-set('dump_assets',           false);
-set('migrate_database',      false);
-env('env_vars',              'SYMFONY_ENV={{env}}');
-env('console_more',          '--no-interaction');
-env('composer_options',      '--verbose --prefer-dist --no-progress');
-env('composer_options_prod', '--no-dev --optimize-autoloader');
-env('composer_options_dev',  '--dev');
-set('shared_files', [
-    'app/config/parameters.yml'
-]);
-set('assets', [
-    'web/css',
-    'web/images',
-    'web/js'
-]);
-set('shared_file_fixtures', [
-    __DIR__.'/../app/config/parameters.%server_name.yml' => '{{deploy_path}}/shared/app/config/parameters.yml'
-]);
+// assets
+set('assets', []);
+set('dump_assets', false);
+
+// Environment vars
+env('env_vars', '');
+env('env', 'prod');
+
+// Adding support for the Symfony3 directory structure
+set('bin_dir', '.');
+set('var_dir', '.');
+
+// Create cache dir
+task('deploy:create_cache_dir', getDeployTask('deployCreateCacheDirectory'))
+    ->desc('Create cache dir');
+
+// define assets deploy task
+task('deploy:assets', getDeployTask('deployAssets'))
+    ->desc('Normalize asset timestamps');
 
 // define php-fpm task and when to call it (after deploy and rollback)
 task('service:php-fpm:reload', getDeployTask('servicePhpFpmReload'))
@@ -102,12 +92,29 @@ task('release:rollback', getDeployTask('releaseRollback'))
 task('release:deploy', function() {})
     ->desc('Push new release.');
 
+/**
+ * Main task
+ */
+task('deploy', [
+    'deploy:prepare',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:assets',
+    'deploy:vendors',
+    'deploy:writable',
+    'deploy:symlink',
+    'cleanup',
+])->desc('Deploy your project');
+
+
 // assign when new tasks are called in pre-existing chain
-after('release:deploy', 'deploy');
-after('deploy',         'service:php-fpm:reload');
-after('deploy',         'service:memcached:restart');
-after('rollback',       'service:php-fpm:reload');
-after('deploy:vendors', 'database:migrate');
-after('deploy:shared',  'deploy:shared:fixtures');
+after('release:deploy',     'deploy');
+after('deploy',             'service:php-fpm:reload');
+after('deploy',             'service:memcached:restart');
+after('rollback',           'service:php-fpm:reload');
+after('rollback',           'service:memcached:restart');
+after('deploy:shared',      'deploy:shared:fixtures');
+after('deploy',             'success');
 
 /* EOF */

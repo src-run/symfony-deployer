@@ -11,9 +11,9 @@
 
 namespace SR\Deployer\Task;
 
-use SR\Console\Std\StdErr;
 use SR\Reflection\Inspect;
 use SR\Utility\ClassInspect;
+use Deployer\Task\Context;
 
 /**
  * Class TaskClosures.
@@ -26,7 +26,7 @@ final class TaskClosures
      *
      * @return \Closure
      */
-    public static function get($method, $class = 'SR\Deployer\Task\TaskClosures')
+    public static function get($method, $class = 'SR\Deployer\Task\TaskDefinitions')
     {
         if (($e = static::isValidClass($class)) instanceof \Closure) {
             return $e;
@@ -51,8 +51,7 @@ final class TaskClosures
         }
         
         return function () use ($class) {
-            $stdErr = new StdErr();
-            $stdErr->writeLine('[WARNING] Requested task class "%s" could not be found.', $class);
+            Context::get()->getOutput()->writeln(sprintf('[WARNING] Requested task class "%s" could not be found.', $class));
         };
     }
 
@@ -71,8 +70,7 @@ final class TaskClosures
         }
 
         return function () use ($method, $class) {
-            $stdErr = new StdErr();
-            $stdErr->writeLine('[WARNING] Request task "%s::%s" could not be found.', $class, $method);
+            Context::get()->getOutput()->writeln(sprintf('[WARNING] Request task "%s::%s" could not be found.', $class, $method));
         };
     }
 

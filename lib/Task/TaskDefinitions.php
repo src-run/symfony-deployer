@@ -87,6 +87,31 @@ class TaskDefinitions
     }
 
     /**
+     * Deploy assets
+     */
+    public function deployAssets()
+    {
+        $assets = implode(' ', array_map(function ($asset) {
+            return "{{release_path}}/$asset";
+        }, get('assets')));
+
+        $time = date('Ymdhi.s');
+
+        run("find $assets -exec touch -t $time {} ';' &> /dev/null || true");
+    }
+
+    /**
+     * Create cache directory
+     */
+    public function deployCreateCacheDirectory()
+    {
+        env('cache_dir', '{{release_path}}/' . trim(get('var_dir'), '/') . '/cache');
+        run('if [ -d "{{cache_dir}}" ]; then rm -rf {{cache_dir}}; fi');
+        run('mkdir -p {{cache_dir}}');
+        run("chmod -R g+w {{cache_dir}}");
+    }
+
+    /**
      * Dump (compile) bundle assets
      */
     public function assetDump()
