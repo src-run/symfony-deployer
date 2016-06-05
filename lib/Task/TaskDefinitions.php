@@ -171,13 +171,16 @@ class TaskDefinitions
         foreach ($fixtures as $from => $goto) {
             $fromFile = $replaceAnchors($from, $replaceCollection);
             $gotoFile = $replaceAnchors($goto, $replaceCollection);
+            $gotoPath = dirname($gotoFile);
 
             if (false === $fromFile = realpath($fromFile)) {
                 $this->writeErrorLine('Fixture not found: <info>%s</info>.', $from);
                 continue;
             }
 
-            upload($fromFile, $gotoFile);
+            run(sprintf('if [ -f $(echo {{deploy_path}}/shared/%s) ]; then rm -rf {{deploy_path}}/shared/%s; fi', $gotoFile, $gotoFile));
+            run(sprintf('if [ ! -d $(echo {{deploy_path}}/shared/%s) ]; then mkdir -p {{deploy_path}}/shared/%s; fi', $gotoPath, $gotoPath));
+            upload($fromFile, sprintf('{{deploy_path}}shared/%s', $gotoFile));
         }
     }
 
@@ -275,7 +278,8 @@ class TaskDefinitions
         $this->writeLine('Release listing:');
 
         foreach (env('releases_list') as $i => $r) {
-            $this->writeLine(' [<comment>%d</comment>] <info>%s</info> (%s) %s', $i, $r, realpath(sprintf('%s/releases/%s', env('deploy_path'), $r)), $i === 0 ? '*active' : '');
+            $this->writeLine(' [<comment>%d</comment>] <info>%s</info> (%s) %s',
+                $i, $r, run(sprintf('realpath %s/releases/%s', env('deploy_path'), $r)), $i === 0 ? '*active' : '');
         }
     }
 
