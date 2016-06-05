@@ -10,6 +10,10 @@
  */
 
 // require composer autoload
+var_dump(__DIR__);
+var_dump(__DIR__ . '/../../vendor/autoload.php');
+var_dump($includeAutoload = __DIR__ . '/../../autoload.php');
+
 if (file_exists($includeAutoload = __DIR__ . '/../../vendor/autoload.php')) {
     require_once $includeAutoload;
 } elseif (file_exists($includeAutoload = __DIR__ . '/../../autoload.php')) {
