@@ -9,6 +9,15 @@
  * file that was distributed with this source code.
  */
 
+if (file_exists($includeFile = __DIR__ . '/../../vendor/autoload.php') ||
+    file_exists($includeFile = __DIR__ . '/../../../../autoload.php')) {
+    require_once($includeFile);
+} else {
+    $stdErr = new \SR\Console\Std\StdErr();
+    $stdErr->writeLine('Could not locate autoload file "%s/../../(vendor|../..)/autoload.php".');
+    exit(255);
+}
+
 // include the base recipe
 requireDeployVendorInclude('deployer/deployer/recipe/symfony3.php');
 
