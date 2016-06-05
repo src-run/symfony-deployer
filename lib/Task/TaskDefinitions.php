@@ -177,7 +177,7 @@ class TaskDefinitions
                 continue;
             }
 
-            $this->writeTaskLine('[<comment>%d</comment>] <info>%s</info> to <info>%s</info>', $i, $fromFile, $gotoFile);
+            $this->writeTaskLine('Uploading file: <info>%s</info> to <info>%s</info>', $fromFile, $gotoFile);
 
             run(sprintf('if [ -f $(echo %s) ]; then rm -rf %s; fi', $gotoFile, $gotoFile));
             run(sprintf('if [ ! -d $(echo %s) ]; then mkdir -p %s; fi', $gotoPath, $gotoPath));
@@ -198,10 +198,7 @@ class TaskDefinitions
             return;
         }
 
-        $this->writeTaskLine(env()->parse('Removing: <info>{{release_path}}/web/app_*.php</info>'));
         run('rm -f {{release_path}}/web/app_*.php');
-
-        $this->writeTaskLine(env()->parse('Removing: <info>{release_path}}/web/config.php</info>'));
         run('rm -f {{release_path}}/web/config.php');
     }
 
@@ -214,7 +211,6 @@ class TaskDefinitions
             return;
         }
 
-        $this->writeTaskLine(env()->parse('Removing: <info>{{release_path}}/web/app_dev.php</info>'));
         run('rm -f {{release_path}}/web/app_dev.php');
     }
 

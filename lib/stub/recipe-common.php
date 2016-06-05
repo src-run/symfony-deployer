@@ -84,11 +84,14 @@ task('release:rollback', getDeployTask('releaseRollback'))
     ->desc('Back to previous release.');
 
 // rollback to previous release
-task('rollback', getDeployTask('releaseRollback'))
+task('rollback', ['release:rollback'])
     ->desc('Back to previous release.');
 
 // alias normal deploy task
 task('release:deploy', function() {})
     ->desc('Push new release.');
+
+after('release:rollback', 'service:php-fpm:reload');
+after('release:rollback', 'service:memcached:restart');
 
 /* EOF */
