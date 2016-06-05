@@ -14,10 +14,8 @@
  */
 function requireDeployInclude($path)
 {
-    if (file_exists($include = __DIR__ . '/../../' . $path)) {
-        require_once $include;
-        return;
-    } elseif (file_exists($include = __DIR__ . '/../../../../../' . $path)) {
+    if (file_exists($include = __DIR__ . '/../../' . $path) ||
+        file_exists($include = __DIR__ . '/../../../../../' . $path)) {
         require_once $include;
         return;
     }
@@ -33,16 +31,31 @@ function requireDeployInclude($path)
  */
 function requireDeployVendorInclude($path)
 {
-    if (file_exists($include = __DIR__ . '/../../vendor/' . $path)) {
-        require_once $include;
-        return;
-    } elseif (file_exists($include = __DIR__ . '/../../../../' . $path)) {
+    if (file_exists($include = __DIR__ . '/../../vendor/' . $path) ||
+        file_exists($include = __DIR__ . '/../../../../' . $path)) {
         require_once $include;
         return;
     }
 
     $stdErr = new \SR\Console\Std\StdErr();
     $stdErr->writeLine('Could not locate required deploy vendor file include "%s(/../../vendor/|/../../../../)%s".', __DIR__, $path);
+
+    exit(255);
+}
+
+/**
+ * @param string $path
+ */
+function requireDeployServerInclude($path)
+{
+    if (file_exists($include = __DIR__ . '/../../' . $path) ||
+        file_exists($include = __DIR__ . '/../../../../../' . $path)) {
+        serverList($include);
+        return;
+    }
+
+    $stdErr = new \SR\Console\Std\StdErr();
+    $stdErr->writeLine('Could not locate required deploy server file include "%s(/../../|/../../../../../)%s".', __DIR__, $path);
 
     exit(255);
 }

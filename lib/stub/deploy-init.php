@@ -22,7 +22,7 @@ if (file_exists($includeFile = __DIR__ . '/../../vendor/autoload.php') ||
 requireDeployVendorInclude('deployer/deployer/recipe/symfony3.php');
 
 // import server list
-serverList(__DIR__ . '/../../.deploy-servers.yml');
+requireDeployServerInclude('.deploy-servers.yml');
 
 // default build stage, git remote, releases to keep, composer path, shared files, and env vars
 set('default_stage',         'dev-local');
